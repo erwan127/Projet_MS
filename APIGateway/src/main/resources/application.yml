@@ -14,15 +14,15 @@ spring:
         - id: vehicule-service
           uri: lb://vehicule-service
           predicates:
-            - Path=/api/vehicules/**
+            - Path=/api/vehicules,/api/vehicules/**
           filters:
-            - RewritePath=/api/vehicules/(?<segment>.*), /vehicules/${segment}
+            - RewritePath=/api/vehicules(?<segment>.*), /vehicules${segment}
         - id: station-service
           uri: lb://station-service
           predicates:
-            - Path=/api/stations/**
+            - Path=/api/stations,/api/stations/**
           filters:
-            - RewritePath=/api/stations/(?<segment>.*), /stations/${segment}
+            - RewritePath=/api/stations(?<segment>.*), /stations${segment}
       globalcors:
         corsConfigurations:
           '[/**]':
