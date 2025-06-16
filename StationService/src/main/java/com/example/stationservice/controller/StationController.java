@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -46,5 +47,66 @@ public class StationController {
         boolean supprime = stationService.supprimerStation(id);
         return supprime ? ResponseEntity.ok(true)
                 : ResponseEntity.notFound().build();
+    }
+
+    // Endpoints pour la gestion des véhicules
+    @GetMapping("/{stationId}/vehicles/{vehicleId}/check")
+    public ResponseEntity<Map<String, Object>> checkVehicleAtStation(@PathVariable String stationId, @PathVariable String vehicleId) {
+        boolean isPresent = stationService.isVehicleAtStation(stationId, vehicleId);
+        
+        Map<String, Object> response = Map.of(
+            "vehicleId", vehicleId,
+            "stationId", stationId,
+            "isPresent", isPresent
+        );
+        
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/vehicles/{vehicleId}/station")
+    public ResponseEntity<Station> findStationWithVehicle(@PathVariable String vehicleId) {
+        Optional<Station> station = stationService.findStationWithVehicle(vehicleId);
+        return station.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PostMapping("/{stationId}/vehicles/{vehicleId}/remove")
+    public ResponseEntity<Map<String, Object>> removeVehicleFromStation(@PathVariable String stationId, @PathVariable String vehicleId) {
+        boolean removed = stationService.removeVehicleFromStation(stationId, vehicleId);
+        
+        Map<String, Object> response = Map.of(
+            "success", removed,
+            "message", removed ? "Véhicule retiré de la station avec succès" : "Échec du retrait du véhicule de la station",
+            "vehicleId", vehicleId,
+            "stationId", stationId
+        );
+        
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/{stationId}/vehicles/{vehicleId}/add")
+    public ResponseEntity<Map<String, Object>> addVehicleToStation(@PathVariable String stationId, @PathVariable String vehicleId) {
+        boolean added = stationService.addVehicleToStation(stationId, vehicleId);
+        
+        Map<String, Object> response = Map.of(
+            "success", added,
+            "message", added ? "Véhicule ajouté à la station avec succès" : "Échec de l'ajout du véhicule à la station",
+            "vehicleId", vehicleId,
+            "stationId", stationId
+        );
+        
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/with-vehicles")
+    public ResponseEntity<List<Station>> getStationsWithVehicles() {
+        List<Station> stations = stationService.getStationsWithVehicles();
+        return ResponseEntity.ok(stations);
+    }
+
+    @GetMapping("/with-space")
+    public ResponseEntity<List<Station>> getStationsWithAvailableSpace() {
+        List<Station> stations = stationService.getStationsWithAvailableSpace();
+        return ResponseEntity.ok(stations);
     }
 }
