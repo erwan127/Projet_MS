@@ -5,18 +5,15 @@ spring:
   application:
     name: station-service
   datasource:
-    url: jdbc:h2:mem:stationdb
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
-  jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
-    hibernate:
-      ddl-auto: create-drop
-    show-sql: true
-  h2:
-    console:
-      enabled: true
+    url: jdbc:mysql://localhost:3307/station_DB  # URL MySQL station_DB
+    username: admin
+    password: admin
+    jpa:
+      hibernate:
+        ddl-auto: update
+      properties:
+        hibernate:
+          dialect: org.hibernate.dialect.MySQL8Dialect
 
 eureka:
   client:
