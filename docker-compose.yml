@@ -27,6 +27,20 @@ services:
     volumes:
       - station_db_data:/var/lib/mysql # Persist data for station_DB
 
+  mysql_user:
+    image: mysql:8.0 
+    container_name: mysql_user_db
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password 
+      MYSQL_DATABASE: user_DB
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin
+    ports:
+      - "3308:3306" # Exposes MySQL on port 3308 on your host to avoid port conflict
+    volumes:
+      - user_db_data:/var/lib/mysql # Persist data for user_DB
+
 volumes:
   vehicule_db_data:
   station_db_data:
+  user_db_data:
