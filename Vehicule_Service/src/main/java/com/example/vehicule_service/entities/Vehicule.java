@@ -1,6 +1,6 @@
 package com.example.vehicule_service.entities;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "vehicules")
