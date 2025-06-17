@@ -23,6 +23,12 @@ spring:
             - Path=/api/stations,/api/stations/**
           filters:
             - RewritePath=/api/stations(?<segment>.*), /stations${segment}
+        - id: user-service
+          uri: lb://user-service
+          predicates:
+            - Path=/api/users,/api/users/**
+          filters:
+            - RewritePath=/api/users(?<segment>.*), /users${segment}
       globalcors:
         corsConfigurations:
           '[/**]':
