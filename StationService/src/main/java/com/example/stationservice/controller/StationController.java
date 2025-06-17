@@ -109,4 +109,60 @@ public class StationController {
         List<Station> stations = stationService.getStationsWithAvailableSpace();
         return ResponseEntity.ok(stations);
     }
+    @PostMapping("/{stationId}/vehicles/{vehicleId}/start-rental")
+    public ResponseEntity<Map<String, Object>> startRental(
+            @PathVariable String stationId,
+            @PathVariable String vehicleId) {
+        try {
+            boolean success = stationService.startRental(stationId, vehicleId);
+            if (success) {
+                Map<String, Object> response = Map.of(
+                        "success", true,
+                        "message", "Location démarrée pour le véhicule " + vehicleId
+                );
+                return ResponseEntity.ok(response);
+            } else {
+                Map<String, Object> response = Map.of(
+                        "success", false,
+                        "message", "Échec du démarrage de la location."
+                );
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+            }
+        } catch (Exception e) {
+            Map<String, Object> response = Map.of(
+                    "success", false,
+                    "message", e.getMessage()
+            );
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+    }
+
+    @PostMapping("/{stationId}/vehicles/{vehicleId}/end-rental")
+    public ResponseEntity<Map<String, Object>> endRental(
+            @PathVariable String stationId,
+            @PathVariable String vehicleId) {
+        try {
+            boolean success = stationService.endRental(stationId, vehicleId);
+            if (success) {
+                Map<String, Object> response = Map.of(
+                        "success", true,
+                        "message", "Véhicule " + vehicleId + " rendu à la station " + stationId
+                );
+                return ResponseEntity.ok(response);
+            } else {
+                Map<String, Object> response = Map.of(
+                        "success", false,
+                        "message", "Échec du retour du véhicule (ex: station pleine)."
+                );
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+            }
+        } catch (Exception e) {
+            Map<String, Object> response = Map.of(
+                    "success", false,
+                    "message", e.getMessage()
+            );
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+    }
+
 }
