@@ -1,0 +1,42 @@
+server:
+  port: 8083
+
+spring:
+  application:
+    name: user-service
+  datasource:
+    url: jdbc:mysql://localhost:3308/user_DB  # URL MySQL user_DB
+    username: admin
+    password: admin
+  jpa:
+    hibernate:
+      ddl-auto: create
+      properties:
+        hibernate:
+          dialect: org.hibernate.dialect.MySQL8Dialect
+    show-sql: true
+    
+  # Configuration de sécurité basique
+  security:
+    user:
+      name: admin
+      password: admin
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
+
+# Configuration du logging
+logging:
+  level:
+    com.example.userservice: INFO
+    org.springframework.security: DEBUG
+    
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info 
