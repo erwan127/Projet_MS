@@ -88,4 +88,36 @@ public class StationService {
                 .filter(station -> station.getNombreVehiculesGares() > 0)
                 .toList();
     }
+
+    @Transactional
+    public boolean startRental(String stationId, String vehicleId) {
+        Station station = stationRepository.findById(stationId)
+                .orElseThrow(() -> new RuntimeException("Station non trouvée avec l'ID : " + stationId));
+
+        if (!station.getVehiculeIds().contains(vehicleId)) {
+            throw new RuntimeException("Le véhicule " + vehicleId + " n'est pas dans la station " + stationId);
+        }
+
+        station.getVehiculeIds().remove(vehicleId);
+        stationRepository.save(station);
+        return true;
+    }
+
+    @Transactional
+    public boolean endRental(String stationId, String vehicleId) {
+        Station station = stationRepository.findById(stationId)
+                .orElseThrow(() -> new RuntimeException("Station non trouvée avec l'ID : " + stationId));
+
+        if (station.getNombrePlacesLibres() <= 0) {
+            throw new RuntimeException("La station " + stationId + " est pleine.");
+        }
+
+        if (station.getVehiculeIds().contains(vehicleId)) {
+            throw new RuntimeException("Le véhicule " + vehicleId + " est déjà dans cette station.");
+        }
+
+        station.getVehiculeIds().add(vehicleId);
+        stationRepository.save(station);
+        return true;
+    }
 }
