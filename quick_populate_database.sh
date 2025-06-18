@@ -7,6 +7,7 @@ echo "=============================================================="
 GREEN='\033[0;32m'
 RED='\033[0;31m'
 BLUE='\033[0;34m'
+YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
 print_success() {
@@ -15,6 +16,10 @@ print_success() {
 
 print_error() {
     echo -e "${RED}❌ $1${NC}"
+}
+
+print_warning() {
+    echo -e "${YELLOW}⚠️  $1${NC}"
 }
 
 print_info() {
@@ -46,6 +51,10 @@ ALICE_RESULT=$(curl -s -X POST $USER_SERVICE/users/subscription \
 if echo "$ALICE_RESULT" | grep -q "id"; then
     curl -s -X PUT $USER_SERVICE/users/user001/activate > /dev/null
     print_success "Alice created and activated"
+elif echo "$ALICE_RESULT" | grep -q "existe déjà"; then
+    print_warning "Alice already exists"
+    # Try to activate existing user
+    curl -s -X PUT $USER_SERVICE/users/user001/activate > /dev/null 2>&1
 else
     print_error "Failed to create Alice"
 fi
@@ -65,6 +74,9 @@ BOB_RESULT=$(curl -s -X POST $USER_SERVICE/users/subscription \
 if echo "$BOB_RESULT" | grep -q "id"; then
     curl -s -X PUT $USER_SERVICE/users/user002/activate > /dev/null
     print_success "Bob created and activated"
+elif echo "$BOB_RESULT" | grep -q "existe déjà"; then
+    print_warning "Bob already exists"
+    curl -s -X PUT $USER_SERVICE/users/user002/activate > /dev/null 2>&1
 else
     print_error "Failed to create Bob"
 fi
@@ -84,6 +96,8 @@ STATION1_RESULT=$(curl -s -X POST $STATION_SERVICE/stations \
 
 if echo "$STATION1_RESULT" | grep -q "id"; then
     print_success "Downtown Station created (capacity: 5)"
+elif echo "$STATION1_RESULT" | grep -q "existe déjà"; then
+    print_warning "Downtown Station already exists"
 else
     print_error "Failed to create Downtown Station"
 fi
@@ -100,6 +114,8 @@ STATION2_RESULT=$(curl -s -X POST $STATION_SERVICE/stations \
 
 if echo "$STATION2_RESULT" | grep -q "id"; then
     print_success "Airport Station created (capacity: 3)"
+elif echo "$STATION2_RESULT" | grep -q "existe déjà"; then
+    print_warning "Airport Station already exists"
 else
     print_error "Failed to create Airport Station"
 fi
@@ -124,6 +140,8 @@ VEHICLE1_RESULT=$(curl -s -X POST $VEHICLE_SERVICE/vehicules \
 
 if echo "$VEHICLE1_RESULT" | grep -q "id"; then
     print_success "Tesla Model 3 created (85% charge)"
+elif echo "$VEHICLE1_RESULT" | grep -q "existe déjà"; then
+    print_warning "Tesla Model 3 already exists"
 else
     print_error "Failed to create Tesla Model 3"
 fi
@@ -145,6 +163,8 @@ VEHICLE2_RESULT=$(curl -s -X POST $VEHICLE_SERVICE/vehicules \
 
 if echo "$VEHICLE2_RESULT" | grep -q "id"; then
     print_success "BMW i3 created (92% charge)"
+elif echo "$VEHICLE2_RESULT" | grep -q "existe déjà"; then
+    print_warning "BMW i3 already exists"
 else
     print_error "Failed to create BMW i3"
 fi
@@ -155,16 +175,20 @@ print_info "Assigning Vehicles to Stations..."
 # Assign vehicles to stations
 print_info "Placing Tesla at Downtown Station..."
 ASSIGN1_RESULT=$(curl -s -X POST $STATION_SERVICE/stations/station001/vehicles/vehicle001/add)
-if echo "$ASSIGN1_RESULT" | grep -q "success"; then
+if echo "$ASSIGN1_RESULT" | grep -q '"success":true'; then
     print_success "Tesla assigned to Downtown Station"
+elif echo "$ASSIGN1_RESULT" | grep -q "déjà"; then
+    print_warning "Tesla already at a station"
 else
     print_error "Failed to assign Tesla to station"
 fi
 
 print_info "Placing BMW at Airport Station..."
 ASSIGN2_RESULT=$(curl -s -X POST $STATION_SERVICE/stations/station002/vehicles/vehicle002/add)
-if echo "$ASSIGN2_RESULT" | grep -q "success"; then
+if echo "$ASSIGN2_RESULT" | grep -q '"success":true'; then
     print_success "BMW assigned to Airport Station"
+elif echo "$ASSIGN2_RESULT" | grep -q "déjà"; then
+    print_warning "BMW already at a station"
 else
     print_error "Failed to assign BMW to station"
 fi
@@ -182,7 +206,7 @@ USER_COUNT=$(curl -s $API_GATEWAY/api/users 2>/dev/null | grep -o '"id":' | wc -
 STATION_COUNT=$(curl -s $API_GATEWAY/api/stations 2>/dev/null | grep -o '"id":' | wc -l | tr -d ' ')
 VEHICLE_COUNT=$(curl -s $API_GATEWAY/api/vehicules 2>/dev/null | grep -o '"id":' | wc -l | tr -d ' ')
 
-print_success "Created: $USER_COUNT users, $STATION_COUNT stations, $VEHICLE_COUNT vehicles"
+print_success "Total: $USER_COUNT users, $STATION_COUNT stations, $VEHICLE_COUNT vehicles"
 
 echo ""
 echo "🎉 Database Population Complete!"
@@ -193,8 +217,8 @@ echo "  curl $API_GATEWAY/api/stations"
 echo "  curl $API_GATEWAY/api/vehicules"
 echo "  curl $API_GATEWAY/api/statistics/health"
 echo ""
-echo "🔑 User Credentials:"
-echo "  Alice: Check the user creation response above for card number and PIN"
-echo "  Bob: Check the user creation response above for card number and PIN"
+echo "🔑 User Credentials (check above for card numbers and PINs):"
+echo "  Alice: user001"
+echo "  Bob: user002"
 echo ""
 echo "✅ Ready for university examination!" 
