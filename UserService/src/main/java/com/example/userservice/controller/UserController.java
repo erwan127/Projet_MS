@@ -290,4 +290,17 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
     }
+
+    // Désactiver un utilisateur
+    @PutMapping("/{id}/deactivate")
+    public ResponseEntity<User> desactiverUtilisateur(@PathVariable String id) {
+        try {
+            User deactivatedUser = userService.suspendrAbonnement(id);
+            return ResponseEntity.ok(deactivatedUser);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.notFound().build();
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+    }
 } 

@@ -70,7 +70,7 @@ public class StationController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PostMapping("/{stationId}/vehicles/{vehicleId}/remove")
+    @DeleteMapping("/{stationId}/vehicles/{vehicleId}/remove")
     public ResponseEntity<Map<String, Object>> removeVehicleFromStation(@PathVariable String stationId, @PathVariable String vehicleId) {
         boolean removed = stationService.removeVehicleFromStation(stationId, vehicleId);
         
@@ -109,6 +109,18 @@ public class StationController {
         List<Station> stations = stationService.getStationsWithAvailableSpace();
         return ResponseEntity.ok(stations);
     }
+
+    // GET endpoint to list vehicles at a station
+    @GetMapping("/{stationId}/vehicles")
+    public ResponseEntity<List<String>> getVehiclesAtStation(@PathVariable String stationId) {
+        Optional<Station> station = stationService.obtenirStation(stationId);
+        if (station.isPresent()) {
+            List<String> vehicleIds = station.get().getVehiculeIds();
+            return ResponseEntity.ok(vehicleIds);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
     @PostMapping("/{stationId}/vehicles/{vehicleId}/start-rental")
     public ResponseEntity<Map<String, Object>> startRental(
             @PathVariable String stationId,
