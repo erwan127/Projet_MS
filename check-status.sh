@@ -26,12 +26,13 @@ docker ps --filter "name=mysql" --format "table {{.Names}}\t{{.Status}}" | grep 
 echo ""
 echo "🚀 Microservice Status:"
 
-# Check each service
+# Check each service with CORRECT ports
 check_service "Eureka Server" 8761 "/eureka/apps"
-check_service "Station Service" 8080
+check_service "API Gateway" 8080
 check_service "Vehicle Service" 8081  
+check_service "Station Service" 8082
 check_service "User Service" 8083
-check_service "API Gateway" 8082
+check_service "Statistics Service" 8084
 
 echo ""
 echo "📊 Java Processes:"
@@ -40,10 +41,11 @@ jps | grep -E "(Application|Eureka|Station|Vehicle|User|APIGateway)" || echo "  
 echo ""
 echo "🌐 Service URLs:"
 echo "   📋 Eureka Dashboard: http://localhost:8761"
-echo "   🚗 Station Service: http://localhost:8080/stations"
+echo "   🌉 API Gateway: http://localhost:8080"
 echo "   🚙 Vehicle Service: http://localhost:8081/vehicules" 
+echo "   🚗 Station Service: http://localhost:8082/stations"
 echo "   👤 User Service: http://localhost:8083/users"
-echo "   🌉 API Gateway: http://localhost:8082"
+echo "   📊 Statistics Service: http://localhost:8084/statistics"
 
 echo ""
 if [ -f ".service_pids" ]; then

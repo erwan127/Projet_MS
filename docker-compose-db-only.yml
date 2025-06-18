@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  mysql_vehicule:
+    image: mysql:8.0
+    container_name: mysql_vehicule_db
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: vehicule_DB
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin
+    ports:
+      - "3306:3306"
+    volumes:
+      - vehicule_db_data:/var/lib/mysql
+
+  mysql_station:
+    image: mysql:8.0
+    container_name: mysql_station_db
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: station_DB
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin
+    ports:
+      - "3307:3306"
+    volumes:
+      - station_db_data:/var/lib/mysql
+
+  mysql_user:
+    image: mysql:8.0 
+    container_name: mysql_user_db
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password 
+      MYSQL_DATABASE: user_DB
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin
+    ports:
+      - "3308:3306"
+    volumes:
+      - user_db_data:/var/lib/mysql
+
+  mysql_statistics:
+    image: mysql:8.0 
+    container_name: mysql_statistics_db
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password 
+      MYSQL_DATABASE: statistics_DB
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin
+    ports:
+      - "3309:3306"
+    volumes:
+      - statistics_db_data:/var/lib/mysql
+
+volumes:
+  vehicule_db_data:
+  station_db_data:
+  user_db_data:
+  statistics_db_data: 
