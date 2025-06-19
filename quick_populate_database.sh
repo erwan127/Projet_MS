@@ -220,5 +220,4 @@ echo ""
 echo "🔑 User Credentials (check above for card numbers and PINs):"
 echo "  Alice: user001"
 echo "  Bob: user002"
-echo ""
-echo "✅ Ready for university examination!" 
+

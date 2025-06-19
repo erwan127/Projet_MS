@@ -102,12 +102,81 @@ public class UserController {
         
         boolean isAuthenticated = userService.authentifierUtilisateur(cardNumber, pinCode);
         
+        if (isAuthenticated) {
+            // Récupérer les informations de l'utilisateur après authentification réussie
+            Optional<User> userOpt = userService.obtenirUtilisateurParCarte(cardNumber);
+            if (userOpt.isPresent()) {
+                User user = userOpt.get();
+                Map<String, Object> response = Map.of(
+                    "authenticated", true,
+                    "message", "Authentification réussie",
+                    "user", Map.of(
+                        "id", user.getId(),
+                        "cardNumber", user.getCardNumber(),
+                        "firstName", user.getFirstName(),
+                        "lastName", user.getLastName(),
+                        "email", user.getEmail(),
+                        "status", user.getStatus(),
+                        "hasActiveRental", user.hasActiveRental(),
+                        "currentRentedVehicleId", user.getCurrentRentedVehicleId()
+                    )
+                );
+                return ResponseEntity.ok(response);
+            }
+        }
+        
         Map<String, Object> response = Map.of(
-            "authenticated", isAuthenticated,
-            "message", isAuthenticated ? "Authentification réussie" : "Authentification échouée"
+            "authenticated", false,
+            "message", "Authentification échouée"
         );
         
-        return ResponseEntity.ok(response);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+    }
+
+    // Alternative RESTful authentication endpoint - more intuitive approach
+    @PostMapping("/authenticate/{cardNumber}")
+    public ResponseEntity<Map<String, Object>> authentifierUtilisateurRESTful(@PathVariable String cardNumber, @RequestBody Map<String, String> credentials) {
+        String pinCode = credentials.get("pinCode");
+        
+        if (pinCode == null || pinCode.trim().isEmpty()) {
+            Map<String, Object> response = Map.of(
+                "authenticated", false,
+                "message", "Code PIN requis"
+            );
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+        
+        boolean isAuthenticated = userService.authentifierUtilisateur(cardNumber, pinCode);
+        
+        if (isAuthenticated) {
+            // Récupérer les informations de l'utilisateur après authentification réussie
+            Optional<User> userOpt = userService.obtenirUtilisateurParCarte(cardNumber);
+            if (userOpt.isPresent()) {
+                User user = userOpt.get();
+                Map<String, Object> response = Map.of(
+                    "authenticated", true,
+                    "message", "Authentification réussie",
+                    "user", Map.of(
+                        "id", user.getId(),
+                        "cardNumber", user.getCardNumber(),
+                        "firstName", user.getFirstName(),
+                        "lastName", user.getLastName(),
+                        "email", user.getEmail(),
+                        "status", user.getStatus(),
+                        "hasActiveRental", user.hasActiveRental(),
+                        "currentRentedVehicleId", user.getCurrentRentedVehicleId()
+                    )
+                );
+                return ResponseEntity.ok(response);
+            }
+        }
+        
+        Map<String, Object> response = Map.of(
+            "authenticated", false,
+            "message", "Authentification échouée - numéro de carte ou code PIN incorrect"
+        );
+        
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
     }
 
     // Vérifier si un utilisateur peut louer un véhicule
@@ -141,33 +210,68 @@ public class UserController {
     public ResponseEntity<Map<String, Object>> commencerLocation(@PathVariable String cardNumber, @RequestBody Map<String, String> request) {
         try {
             String vehicleId = request.get("vehicleId");
-            User user = rentalService.startRental(cardNumber, vehicleId);
+            String stationId = request.get("stationId");
+            
+            // Debug logging
+            System.out.println("DEBUG: cardNumber=" + cardNumber + ", vehicleId=" + vehicleId + ", stationId=" + stationId);
+            
+            // Validation des paramètres requis
+            if (vehicleId == null || vehicleId.trim().isEmpty()) {
+                Map<String, Object> response = Map.of(
+                    "success", false,
+                    "message", "L'ID du véhicule est requis pour démarrer la location",
+                    "error", "MISSING_VEHICLE_ID",
+                    "debug", "vehicleId is null or empty"
+                );
+                return ResponseEntity.badRequest().body(response);
+            }
+            
+            if (stationId == null || stationId.trim().isEmpty()) {
+                Map<String, Object> response = Map.of(
+                    "success", false,
+                    "message", "L'ID de la station est requis pour démarrer la location",
+                    "error", "MISSING_STATION_ID",
+                    "debug", "stationId is null or empty"
+                );
+                return ResponseEntity.badRequest().body(response);
+            }
+            
+            User user = rentalService.startRentalFromStation(cardNumber, vehicleId, stationId);
             
             Map<String, Object> response = Map.of(
                 "success", true,
-                "message", "Location démarrée avec succès depuis la station de recharge",
-                "user", user
+                "message", "Location démarrée avec succès depuis la station " + stationId,
+                "user", user,
+                "vehicleId", vehicleId,
+                "stationId", stationId
             );
             return ResponseEntity.ok(response);
         } catch (IllegalArgumentException e) {
+            System.out.println("ERROR: IllegalArgumentException - " + e.getMessage());
             Map<String, Object> response = Map.of(
                 "success", false,
                 "message", e.getMessage(),
-                "error", "VALIDATION_ERROR"
+                "error", "VALIDATION_ERROR",
+                "debug", "IllegalArgumentException: " + e.getMessage()
             );
             return ResponseEntity.badRequest().body(response);
         } catch (IllegalStateException e) {
+            System.out.println("ERROR: IllegalStateException - " + e.getMessage());
             Map<String, Object> response = Map.of(
                 "success", false,
                 "message", e.getMessage(),
-                "error", "STATE_ERROR"
+                "error", "STATE_ERROR",
+                "debug", "IllegalStateException: " + e.getMessage()
             );
             return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
         } catch (RuntimeException e) {
+            System.out.println("ERROR: RuntimeException - " + e.getMessage());
+            e.printStackTrace();
             Map<String, Object> response = Map.of(
                 "success", false,
-                "message", "Erreur système lors de la location",
-                "error", "SYSTEM_ERROR"
+                "message", "Erreur système lors de la location: " + e.getMessage(),
+                "error", "SYSTEM_ERROR",
+                "debug", "RuntimeException: " + e.getMessage()
             );
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
@@ -221,10 +325,58 @@ public class UserController {
 
     // Obtenir le véhicule actuellement loué par un utilisateur
     @GetMapping("/card/{cardNumber}/current-vehicle")
-    public ResponseEntity<VehicleDTO> obtenirVehiculeActuel(@PathVariable String cardNumber) {
-        Optional<VehicleDTO> vehicle = rentalService.getUserCurrentVehicle(cardNumber);
-        return vehicle.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<Map<String, Object>> obtenirVehiculeActuel(@PathVariable String cardNumber) {
+        try {
+            // Check user's rental status directly from database
+            Optional<User> userOpt = userService.obtenirUtilisateurParCarte(cardNumber);
+            if (userOpt.isEmpty()) {
+                Map<String, Object> response = Map.of(
+                    "hasActiveRental", false,
+                    "message", "Utilisateur non trouvé"
+                );
+                return ResponseEntity.ok(response);
+            }
+            
+            User user = userOpt.get();
+            boolean hasActiveRental = user.hasActiveRental();
+            
+            if (!hasActiveRental) {
+                Map<String, Object> response = Map.of(
+                    "hasActiveRental", false,
+                    "message", "Aucun véhicule en location"
+                );
+                return ResponseEntity.ok(response);
+            }
+            
+            // User has an active rental, try to get vehicle details
+            String vehicleId = user.getCurrentRentedVehicleId();
+            Optional<VehicleDTO> vehicle = rentalService.getUserCurrentVehicle(cardNumber);
+            
+            if (vehicle.isPresent()) {
+                Map<String, Object> response = Map.of(
+                    "hasActiveRental", true,
+                    "vehicle", vehicle.get(),
+                    "vehicleId", vehicleId
+                );
+                return ResponseEntity.ok(response);
+            } else {
+                // User has a rental but vehicle details not available
+                Map<String, Object> response = Map.of(
+                    "hasActiveRental", true,
+                    "message", "Véhicule en location mais détails non disponibles",
+                    "vehicleId", vehicleId,
+                    "error", "Vehicle service unavailable"
+                );
+                return ResponseEntity.ok(response);
+            }
+        } catch (Exception e) {
+            Map<String, Object> response = Map.of(
+                "hasActiveRental", false,
+                "message", "Erreur lors de la récupération du véhicule",
+                "error", e.getMessage()
+            );
+            return ResponseEntity.ok(response);
+        }
     }
 
     // NOUVEAUX ENDPOINTS pour la gestion des stations
@@ -301,6 +453,52 @@ public class UserController {
             return ResponseEntity.notFound().build();
         } catch (IllegalStateException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+    }
+
+    // ADMIN: Reset user rental state (cleanup inconsistent data)
+    @PostMapping("/card/{cardNumber}/reset-rental-state")
+    public ResponseEntity<Map<String, Object>> resetUserRentalState(@PathVariable String cardNumber) {
+        try {
+            Optional<User> userOpt = userService.obtenirUtilisateurParCarte(cardNumber);
+            if (userOpt.isEmpty()) {
+                Map<String, Object> response = Map.of(
+                    "success", false,
+                    "message", "Utilisateur non trouvé"
+                );
+                return ResponseEntity.notFound().body(response);
+            }
+            
+            User user = userOpt.get();
+            String oldVehicleId = user.getCurrentRentedVehicleId();
+            
+            if (!user.hasActiveRental()) {
+                Map<String, Object> response = Map.of(
+                    "success", false,
+                    "message", "Utilisateur n'a pas de location active"
+                );
+                return ResponseEntity.ok(response);
+            }
+            
+            // Reset user rental state
+            user.setCurrentRentedVehicleId(null);
+            User savedUser = userService.sauvegarderUtilisateur(user);
+            
+            Map<String, Object> response = Map.of(
+                "success", true,
+                "message", "État de location réinitialisé",
+                "user", savedUser,
+                "previousVehicleId", oldVehicleId
+            );
+            return ResponseEntity.ok(response);
+            
+        } catch (Exception e) {
+            Map<String, Object> response = Map.of(
+                "success", false,
+                "message", "Erreur lors de la réinitialisation: " + e.getMessage(),
+                "error", e.getMessage()
+            );
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
 } 

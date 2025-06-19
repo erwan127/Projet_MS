@@ -60,7 +60,7 @@ public class StationClientService {
             String url = STATION_SERVICE_URL + "/" + stationId + "/vehicles/" + vehicleId + "/remove";
             ResponseEntity<Map<String, Object>> response = restTemplate.exchange(
                 url, 
-                HttpMethod.POST, 
+                HttpMethod.DELETE, 
                 null, 
                 new ParameterizedTypeReference<Map<String, Object>>() {}
             );

@@ -121,60 +121,18 @@ public class StationController {
         return ResponseEntity.notFound().build();
     }
 
-    @PostMapping("/{stationId}/vehicles/{vehicleId}/start-rental")
-    public ResponseEntity<Map<String, Object>> startRental(
-            @PathVariable String stationId,
-            @PathVariable String vehicleId) {
-        try {
-            boolean success = stationService.startRental(stationId, vehicleId);
-            if (success) {
-                Map<String, Object> response = Map.of(
-                        "success", true,
-                        "message", "Location démarrée pour le véhicule " + vehicleId
-                );
-                return ResponseEntity.ok(response);
-            } else {
-                Map<String, Object> response = Map.of(
-                        "success", false,
-                        "message", "Échec du démarrage de la location."
-                );
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-            }
-        } catch (Exception e) {
-            Map<String, Object> response = Map.of(
-                    "success", false,
-                    "message", e.getMessage()
-            );
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-        }
-    }
-
-    @PostMapping("/{stationId}/vehicles/{vehicleId}/end-rental")
-    public ResponseEntity<Map<String, Object>> endRental(
-            @PathVariable String stationId,
-            @PathVariable String vehicleId) {
-        try {
-            boolean success = stationService.endRental(stationId, vehicleId);
-            if (success) {
-                Map<String, Object> response = Map.of(
-                        "success", true,
-                        "message", "Véhicule " + vehicleId + " rendu à la station " + stationId
-                );
-                return ResponseEntity.ok(response);
-            } else {
-                Map<String, Object> response = Map.of(
-                        "success", false,
-                        "message", "Échec du retour du véhicule (ex: station pleine)."
-                );
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-            }
-        } catch (Exception e) {
-            Map<String, Object> response = Map.of(
-                    "success", false,
-                    "message", e.getMessage()
-            );
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-        }
-    }
+    // REMOVED: These endpoints have been removed because rental operations must be initiated
+    // through the UserService with proper user authentication and validation.
+    // Direct station-level rental operations without user association violate 
+    // the Version 2 requirements for user management.
+    
+    // If you need to start/end rentals, use:
+    // POST /users/card/{cardNumber}/start-rental
+    // POST /users/card/{cardNumber}/end-rental
+    
+    // The StationService should only handle internal operations for adding/removing vehicles
+    // which are already available through:
+    // POST /{stationId}/vehicles/{vehicleId}/add
+    // DELETE /{stationId}/vehicles/{vehicleId}/remove
 
 }

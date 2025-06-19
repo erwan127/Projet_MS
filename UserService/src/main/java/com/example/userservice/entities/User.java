@@ -1,6 +1,6 @@
 package com.example.userservice.entities;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
