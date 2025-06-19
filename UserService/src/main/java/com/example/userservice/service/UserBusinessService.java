@@ -171,6 +171,11 @@ public class UserBusinessService {
         return true;
     }
 
+    // Sauvegarder un utilisateur (utilitaire pour les mises à jour)
+    public User sauvegarderUtilisateur(User user) {
+        return userRepository.save(user);
+    }
+
     // Méthodes privées utilitaires
     private String genererNumeroCarte() {
         String cardNumber;

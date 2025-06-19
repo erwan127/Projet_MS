@@ -5,15 +5,20 @@ spring:
   application:
     name: user-service
   datasource:
-    url: jdbc:mysql://localhost:3308/user_DB  # URL MySQL user_DB
-    username: admin
-    password: admin
+    url: jdbc:h2:mem:userdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: password
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
   jpa:
     hibernate:
-      ddl-auto: create
-      properties:
-        hibernate:
-          dialect: org.hibernate.dialect.MySQL8Dialect
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
     show-sql: true
     
   # Configuration de sécurité basique
@@ -32,8 +37,9 @@ eureka:
 # Configuration du logging
 logging:
   level:
-    com.example.userservice: INFO
+    com.example.userservice: DEBUG
     org.springframework.security: DEBUG
+    org.hibernate: DEBUG
     
 management:
   endpoints:

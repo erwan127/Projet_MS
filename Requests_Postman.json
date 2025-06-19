@@ -1,0 +1,1256 @@
+{
+	"info": {
+		"_postman_id": "1ab1b5cd-9240-4baa-b186-9e0fdfab7869",
+		"name": "Vehicle Rental Microservices - Complete Collection",
+		"description": "Comprehensive collection for testing all microservices including vehicle rental workflows",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "45973734",
+		"_collection_link": "https://erwan-4776386.postman.co/workspace/erwan's-Workspace~88b4ed76-0193-4d38-8ba3-ba18df1edc8b/collection/45973734-1ab1b5cd-9240-4baa-b186-9e0fdfab7869?action=share&source=collection_link&creator=45973734"
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "vehicle_id",
+			"value": "vehicle001",
+			"type": "string"
+		},
+		{
+			"key": "station_id",
+			"value": "station001",
+			"type": "string"
+		},
+		{
+			"key": "user_id",
+			"value": "user001",
+			"type": "string"
+		},
+		{
+			"key": "card_number",
+			"value": "1234567890",
+			"type": "string"
+		},
+		{
+			"key": "pin_code",
+			"value": "1234",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "🚗 Vehicle Service",
+			"item": [
+				{
+					"name": "Get All Vehicles",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/vehicules",
+							"host": ["{{base_url}}"],
+							"path": ["api", "vehicules"]
+						},
+						"description": "Retrieve all vehicles in the system"
+					}
+				},
+				{
+					"name": "Get Vehicle by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/vehicules/{{vehicle_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "vehicules", "{{vehicle_id}}"]
+						},
+						"description": "Get specific vehicle details"
+					}
+				},
+				{
+					"name": "Create New Vehicle",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": \"vehicle005\",\n    \"marque\": \"Renault\",\n    \"modele\": \"Zoe\",\n    \"nombrePlaces\": 5,\n    \"kilometrage\": 0.0,\n    \"etat\": \"OPERATIONNEL_EN_STATION\",\n    \"position\": {\n        \"x\": 10.0,\n        \"y\": 20.0\n    },\n    \"niveauCharge\": 100\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/vehicules",
+							"host": ["{{base_url}}"],
+							"path": ["api", "vehicules"]
+						},
+						"description": "Create a new vehicle"
+					}
+				},
+				{
+					"name": "Update Vehicle",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": \"{{vehicle_id}}\",\n    \"marque\": \"Tesla\",\n    \"modele\": \"Model 3 Updated\",\n    \"nombrePlaces\": 5,\n    \"kilometrage\": 1500.0,\n    \"etat\": \"OPERATIONNEL_EN_STATION\",\n    \"position\": {\n        \"x\": 15.0,\n        \"y\": 25.0\n    },\n    \"niveauCharge\": 85\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/vehicules/{{vehicle_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "vehicules", "{{vehicle_id}}"]
+						},
+						"description": "Update vehicle details"
+					}
+				},
+				{
+					"name": "Delete Vehicle",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/vehicules/vehicle005",
+							"host": ["{{base_url}}"],
+							"path": ["api", "vehicules", "vehicle005"]
+						},
+						"description": "Delete a vehicle"
+					}
+				},
+				{
+					"name": "Start Rental (from Vehicle)",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/vehicules/{{vehicle_id}}/rent",
+							"host": ["{{base_url}}"],
+							"path": ["api", "vehicules", "{{vehicle_id}}", "rent"]
+						},
+						"description": "Start rental directly from vehicle service"
+					}
+				},
+				{
+					"name": "End Rental (from Vehicle)",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/vehicules/{{vehicle_id}}/return",
+							"host": ["{{base_url}}"],
+							"path": ["api", "vehicules", "{{vehicle_id}}", "return"]
+						},
+						"description": "End rental and return vehicle"
+					}
+				}
+			]
+		},
+		{
+			"name": "🚉 Station Service",
+			"item": [
+				{
+					"name": "Get All Stations",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/stations",
+							"host": ["{{base_url}}"],
+							"path": ["api", "stations"]
+						},
+						"description": "Retrieve all stations"
+					}
+				},
+				{
+					"name": "Get Station by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/stations/{{station_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "stations", "{{station_id}}"]
+						},
+						"description": "Get specific station details"
+					}
+				},
+				{
+					"name": "Create New Station",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": \"station005\",\n    \"position\": {\n        \"x\": 50.0,\n        \"y\": 60.0\n    },\n    \"capaciteGlobale\": 8\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/stations",
+							"host": ["{{base_url}}"],
+							"path": ["api", "stations"]
+						},
+						"description": "Create a new station"
+					}
+				},
+				{
+					"name": "Update Station",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": \"{{station_id}}\",\n    \"position\": {\n        \"x\": 55.0,\n        \"y\": 65.0\n    },\n    \"capaciteGlobale\": 10\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/stations/{{station_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "stations", "{{station_id}}"]
+						},
+						"description": "Update station details"
+					}
+				},
+				{
+					"name": "Delete Station",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/stations/station005",
+							"host": ["{{base_url}}"],
+							"path": ["api", "stations", "station005"]
+						},
+						"description": "Delete a station"
+					}
+				},
+				{
+					"name": "Add Vehicle to Station",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/stations/{{station_id}}/vehicles/{{vehicle_id}}/add",
+							"host": ["{{base_url}}"],
+							"path": ["api", "stations", "{{station_id}}", "vehicles", "{{vehicle_id}}", "add"]
+						},
+						"description": "Add a vehicle to a specific station"
+					}
+				},
+				{
+					"name": "Remove Vehicle from Station",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/stations/{{station_id}}/vehicles/{{vehicle_id}}/remove",
+							"host": ["{{base_url}}"],
+							"path": ["api", "stations", "{{station_id}}", "vehicles", "{{vehicle_id}}", "remove"]
+						},
+						"description": "Remove a vehicle from a station"
+					}
+				},
+				{
+					"name": "ℹ️ Station Service Info",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/stations",
+							"host": ["{{base_url}}"],
+							"path": ["api", "stations"]
+						},
+						"description": "ℹ️ Station Service Information:\n\n✅ Available operations:\n- Manage stations (CRUD)\n- Add/remove vehicles to/from stations\n- Get station details and vehicle lists\n\n❌ REMOVED operations (Version 2 fix):\n- Station-level rental endpoints (start-rental, end-rental)\n\n🔒 All rental operations now require user authentication through UserService:\n- POST /api/users/card/{cardNumber}/start-rental\n- POST /api/users/card/{cardNumber}/end-rental"
+					}
+				},
+				{
+					"name": "Get Station Vehicles",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/stations/{{station_id}}/vehicles",
+							"host": ["{{base_url}}"],
+							"path": ["api", "stations", "{{station_id}}", "vehicles"]
+						},
+						"description": "Get all vehicles at a specific station"
+					}
+				},
+				{
+					"name": "📋 NEW RENTAL LOGIC DOCUMENTATION",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/stations",
+							"host": ["{{base_url}}"],
+							"path": ["api", "stations"]
+						},
+						"description": "🔥 NEW CORRECTED RENTAL LOGIC 🔥\n\n✅ START RENTAL:\n- Endpoint: POST /users/card/{cardNumber}/start-rental\n- Body: {\"vehicleId\": \"VEH001\", \"stationId\": \"STAT001\"}\n- Logic: User + Station + Vehicle (vehicle MUST be AT that station)\n- Validation: \n  ✓ User authentication with cardNumber\n  ✓ User can rent (active, no current rental)\n  ✓ Station exists\n  ✓ Vehicle exists at that specific station\n  ✓ Vehicle is available\n\n✅ END RENTAL:\n- Endpoint: POST /users/card/{cardNumber}/end-rental\n- Body: {\"stationId\": \"STAT002\"}\n- Logic: Return vehicle to ANY station with available space\n- Validation:\n  ✓ User has active rental\n  ✓ Station exists and has space\n  ✓ Vehicle is returned to specified station\n\n🚨 BREAKING CHANGES:\n- startRental now REQUIRES stationId parameter\n- Vehicle must be at specified station to start rental\n- No more guessing which station has the vehicle\n- Proper user + station + vehicle validation\n\n📝 TESTING WORKFLOW:\n1. Check existing users (get cardNumber/pinCode)\n2. Authenticate user\n3. Find stations with vehicles\n4. Pick stationId + vehicleId from same station\n5. Start rental with both IDs\n6. Find return station with space\n7. End rental at return station"
+					}
+				}
+			]
+		},
+		{
+			"name": "👤 User Service",
+			"item": [
+				{
+					"name": "Get All Users",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/users",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users"]
+						},
+						"description": "Get all users"
+					}
+				},
+				{
+					"name": "🔍 CHECK EXISTING USERS (Run This First!)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/users",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users"]
+						},
+						"description": "Check what users already exist - Look for cardNumber and pinCode in the response!"
+					}
+				},
+				{
+					"name": "Get User by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/users/{{user_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "{{user_id}}"]
+						},
+						"description": "Get specific user details"
+					}
+				},
+				{
+					"name": "Get User by Card Number",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/users/card/{{card_number}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "card", "{{card_number}}"]
+						},
+						"description": "Get user details by card number"
+					}
+				},
+				{
+					"name": "Create User Subscription",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": \"user005\",\n    \"firstName\": \"Marie\",\n    \"lastName\": \"Dubois\",\n    \"email\": \"marie.dubois@example.com\",\n    \"phoneNumber\": \"0612345678\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/subscription",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "subscription"]
+						},
+						"description": "Create a new user subscription"
+					}
+				},
+				{
+					"name": "🔧 CREATE TEST USER (Run First!)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": \"testuser001\",\n    \"firstName\": \"Test\",\n    \"lastName\": \"User\",\n    \"email\": \"test@example.com\",\n    \"phoneNumber\": \"1234567890\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/subscription",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "subscription"]
+						},
+						"description": "Create test user for authentication testing - RUN THIS FIRST!"
+					}
+				},
+				{
+					"name": "🔧 ACTIVATE TEST USER (Run Second!)",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/users/testuser001/activate",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "testuser001", "activate"]
+						},
+						"description": "Activate the test user - RUN THIS SECOND!"
+					}
+				},
+				{
+					"name": "🔧 GET TEST USER INFO (Run Third!)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/users/testuser001",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "testuser001"]
+						},
+						"description": "Get test user details to see cardNumber and pinCode - COPY THESE VALUES!"
+					}
+				},
+				{
+					"name": "Activate User",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/users/{{user_id}}/activate",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "{{user_id}}", "activate"]
+						},
+						"description": "Activate a user account"
+					}
+				},
+				{
+					"name": "Suspend User",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/users/{{user_id}}/suspend",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "{{user_id}}", "suspend"]
+						},
+						"description": "Suspend a user account"
+					}
+				},
+				{
+					"name": "🔐 TEST AUTHENTICATION (Run After Creating User!)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"cardNumber\": \"REPLACE_WITH_ACTUAL_CARD_NUMBER\",\n    \"pinCode\": \"REPLACE_WITH_ACTUAL_PIN_CODE\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/authenticate",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "authenticate"]
+						},
+						"description": "🚨 IMPORTANT: Replace REPLACE_WITH_ACTUAL_CARD_NUMBER and REPLACE_WITH_ACTUAL_PIN_CODE with values from GET TEST USER INFO request!"
+					}
+				},
+				{
+					"name": "🔐 Authenticate User (RESTful)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"pinCode\": \"{{pin_code}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/authenticate/{{card_number}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "authenticate", "{{card_number}}"]
+						},
+						"description": "RESTful authentication - Card number in URL, only PIN in body. More intuitive approach!"
+					},
+					"response": [
+						{
+							"name": "Successful Authentication",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"cardNumber\": \"CARD12345678\",\n    \"pinCode\": \"1234\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/users/authenticate",
+									"host": ["{{base_url}}"],
+									"path": ["api", "users", "authenticate"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"authenticated\": true,\n    \"message\": \"Authentification réussie\",\n    \"user\": {\n        \"id\": \"user123\",\n        \"cardNumber\": \"CARD12345678\",\n        \"firstName\": \"John\",\n        \"lastName\": \"Doe\",\n        \"email\": \"john.doe@example.com\",\n        \"status\": \"ACTIVE\",\n        \"hasActiveRental\": false,\n        \"currentRentedVehicleId\": null\n    }\n}"
+						},
+						{
+							"name": "Failed Authentication",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"cardNumber\": \"CARD12345678\",\n    \"pinCode\": \"9999\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/users/authenticate",
+									"host": ["{{base_url}}"],
+									"path": ["api", "users", "authenticate"]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"authenticated\": false,\n    \"message\": \"Authentification échouée\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Check if User Can Rent",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/users/card/{{card_number}}/can-rent",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "card", "{{card_number}}", "can-rent"]
+						},
+						"description": "Check if user can rent a vehicle"
+					}
+				},
+				{
+					"name": "Check if User Can Rent Specific Vehicle",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/users/card/{{card_number}}/can-rent/{{vehicle_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "card", "{{card_number}}", "can-rent", "{{vehicle_id}}"]
+						},
+						"description": "Check if user can rent a specific vehicle"
+					}
+				},
+				{
+					"name": "🚗 Start Rental (Authenticated) - REQUIRES STATION",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"vehicleId\": \"{{vehicle_id}}\",\n    \"stationId\": \"{{station_id}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/card/{{card_number}}/start-rental",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "card", "{{card_number}}", "start-rental"]
+						},
+						"description": "Start rental with user authentication - MUST specify both vehicleId AND stationId. Vehicle must be at the specified station!"
+					}
+				},
+				{
+					"name": "🚗 End Rental (Authenticated)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"stationId\": \"{{station_id}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/card/{{card_number}}/end-rental",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "card", "{{card_number}}", "end-rental"]
+						},
+						"description": "End rental with user authentication - return vehicle to station"
+					}
+				},
+				{
+					"name": "Get User's Current Vehicle",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/users/card/{{card_number}}/current-vehicle",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "card", "{{card_number}}", "current-vehicle"]
+						},
+						"description": "Get vehicle currently rented by user"
+					}
+				},
+				{
+					"name": "Get Stations with Vehicles",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/users/stations/with-vehicles",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "stations", "with-vehicles"]
+						},
+						"description": "Get stations that have available vehicles"
+					}
+				},
+				{
+					"name": "Get Stations with Available Space",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/users/stations/with-space",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "stations", "with-space"]
+						},
+						"description": "Get stations that have available space for vehicle return"
+					}
+				},
+				{
+					"name": "Get Vehicle Station Location",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/users/vehicles/{{vehicle_id}}/station",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "vehicles", "{{vehicle_id}}", "station"]
+						},
+						"description": "Get station where vehicle is currently located"
+					}
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/users/user005",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "user005"]
+						},
+						"description": "Delete a user"
+					}
+				}
+			]
+		},
+		{
+			"name": "📊 Statistics Service",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/statistics/health",
+							"host": ["{{base_url}}"],
+							"path": ["api", "statistics", "health"]
+						},
+						"description": "Check if Statistics Service is healthy"
+					}
+				},
+				{
+					"name": "Trigger Statistics Collection",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/statistics/collect",
+							"host": ["{{base_url}}"],
+							"path": ["api", "statistics", "collect"]
+						},
+						"description": "Manually trigger statistics collection"
+					}
+				},
+				{
+					"name": "Global Statistics (Hourly)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/statistics/global?granularity=HOURLY",
+							"host": ["{{base_url}}"],
+							"path": ["api", "statistics", "global"],
+							"query": [
+								{
+									"key": "granularity",
+									"value": "HOURLY"
+								}
+							]
+						},
+						"description": "Get global statistics with hourly granularity"
+					}
+				},
+				{
+					"name": "Global Statistics (Daily)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/statistics/global?granularity=DAILY",
+							"host": ["{{base_url}}"],
+							"path": ["api", "statistics", "global"],
+							"query": [
+								{
+									"key": "granularity",
+									"value": "DAILY"
+								}
+							]
+						},
+						"description": "Get global statistics with daily granularity"
+					}
+				},
+				{
+					"name": "Vehicle Statistics",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/statistics/vehicle/{{vehicle_id}}?granularity=HOURLY",
+							"host": ["{{base_url}}"],
+							"path": ["api", "statistics", "vehicle", "{{vehicle_id}}"],
+							"query": [
+								{
+									"key": "granularity",
+									"value": "HOURLY"
+								}
+							]
+						},
+						"description": "Get statistics for a specific vehicle"
+					}
+				},
+				{
+					"name": "Station Statistics",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/statistics/station/{{station_id}}?granularity=HOURLY",
+							"host": ["{{base_url}}"],
+							"path": ["api", "statistics", "station", "{{station_id}}"],
+							"query": [
+								{
+									"key": "granularity",
+									"value": "HOURLY"
+								}
+							]
+						},
+						"description": "Get statistics for a specific station"
+					}
+				},
+				{
+					"name": "User Statistics",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/statistics/user/{{user_id}}?granularity=HOURLY",
+							"host": ["{{base_url}}"],
+							"path": ["api", "statistics", "user", "{{user_id}}"],
+							"query": [
+								{
+									"key": "granularity",
+									"value": "HOURLY"
+								}
+							]
+						},
+						"description": "Get statistics for a specific user"
+					}
+				},
+				{
+					"name": "Dashboard Summary",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/statistics/dashboard",
+							"host": ["{{base_url}}"],
+							"path": ["api", "statistics", "dashboard"]
+						},
+						"description": "Get dashboard summary statistics"
+					}
+				},
+				{
+					"name": "Historical Data - Total Vehicles",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/statistics/history/TOTAL_VEHICLES?granularity=HOURLY&startTime=2025-06-17T00:00:00&endTime=2025-06-18T23:59:59",
+							"host": ["{{base_url}}"],
+							"path": ["api", "statistics", "history", "TOTAL_VEHICLES"],
+							"query": [
+								{
+									"key": "granularity",
+									"value": "HOURLY"
+								},
+								{
+									"key": "startTime",
+									"value": "2025-06-17T00:00:00"
+								},
+								{
+									"key": "endTime",
+									"value": "2025-06-18T23:59:59"
+								}
+							]
+						},
+						"description": "Get historical data for total vehicles"
+					}
+				}
+			]
+		},
+		{
+			"name": "🚗💨 Version 2: User-Authenticated Rental Workflows",
+			"item": [
+				{
+					"name": "✅ Complete Rental Flow - Version 2 (Authenticated)",
+					"item": [
+						{
+							"name": "1. 🔐 Authenticate User",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"cardNumber\": \"{{card_number}}\",\n    \"pinCode\": \"{{pin_code}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/users/authenticate",
+									"host": ["{{base_url}}"],
+									"path": ["api", "users", "authenticate"]
+								},
+								"description": "Authenticate user with card and PIN before rental"
+							}
+						},
+						{
+							"name": "2. 🔍 Check User Can Rent",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/users/card/{{card_number}}/can-rent",
+									"host": ["{{base_url}}"],
+									"path": ["api", "users", "card", "{{card_number}}", "can-rent"]
+								},
+								"description": "Verify user is eligible to rent (active, no current rental)"
+							}
+						},
+						{
+							"name": "3. 🚉 Find Stations with Vehicles",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/users/stations/with-vehicles",
+									"host": ["{{base_url}}"],
+									"path": ["api", "users", "stations", "with-vehicles"]
+								},
+								"description": "Find stations that have available vehicles - COPY stationId and vehicleId from response!"
+							}
+						},
+						{
+							"name": "3.5. 🔍 Check Specific Station Vehicles",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/stations/{{station_id}}/vehicles",
+									"host": ["{{base_url}}"],
+									"path": ["api", "stations", "{{station_id}}", "vehicles"]
+								},
+								"description": "Verify which vehicles are at a specific station before starting rental"
+							}
+						},
+						{
+							"name": "4. 🚗 Start Rental (User + Station + Vehicle)",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"vehicleId\": \"{{vehicle_id}}\",\n    \"stationId\": \"{{station_id}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/users/card/{{card_number}}/start-rental",
+									"host": ["{{base_url}}"],
+									"path": ["api", "users", "card", "{{card_number}}", "start-rental"]
+								},
+								"description": "Start rental with proper logic: user authentication + vehicle must be AT the specified station"
+							}
+						},
+						{
+							"name": "5. 📍 Check Current Rental Status",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/users/card/{{card_number}}/current-vehicle",
+									"host": ["{{base_url}}"],
+									"path": ["api", "users", "card", "{{card_number}}", "current-vehicle"]
+								},
+								"description": "Check user's current rented vehicle"
+							}
+						},
+						{
+							"name": "6. 🚉 Find Return Stations",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/users/stations/with-space",
+									"host": ["{{base_url}}"],
+									"path": ["api", "users", "stations", "with-space"]
+								},
+								"description": "Find stations with available space for return"
+							}
+						},
+						{
+							"name": "7. 🏁 End Rental (Authenticated)",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"stationId\": \"{{station_id}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/users/card/{{card_number}}/end-rental",
+									"host": ["{{base_url}}"],
+									"path": ["api", "users", "card", "{{card_number}}", "end-rental"]
+								},
+								"description": "End rental and return vehicle to station"
+							}
+						},
+						{
+							"name": "8. ✅ Verify Rental Completion",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/users/card/{{card_number}}",
+									"host": ["{{base_url}}"],
+									"path": ["api", "users", "card", "{{card_number}}"]
+								},
+								"description": "Verify user has no active rental"
+							}
+						}
+					],
+					"description": "Complete Version 2 car rental workflow with proper user authentication"
+				}
+			],
+			"description": "Version 2: Secure rental workflows with mandatory user authentication"
+		}
+	]
+}

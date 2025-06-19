@@ -1,6 +1,6 @@
 package com.example.vehicule_service.entities;
 
-import jakarta.persistence.Embeddable;
+import javax.persistence.Embeddable;
 
 @Embeddable
 public class Position {

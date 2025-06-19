@@ -6,14 +6,14 @@ spring:
     name: station-service
   datasource:
     url: jdbc:mysql://localhost:3307/station_DB  # URL MySQL station_DB
-    username: admin
-    password: admin
+    username: root
+    password: root_password
   jpa:
     hibernate:
-      ddl-auto: create
-      properties:
-        hibernate:
-          dialect: org.hibernate.dialect.MySQL8Dialect
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
 
 eureka:
   client:

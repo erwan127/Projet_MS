@@ -1,6 +1,6 @@
 package com.example.stationservice.entities;
 
-import jakarta.persistence.Embeddable;
+import javax.persistence.Embeddable;
 
 @Embeddable
 public class Position {

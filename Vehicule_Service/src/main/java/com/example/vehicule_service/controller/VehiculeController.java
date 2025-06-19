@@ -94,4 +94,19 @@ public class VehiculeController {
         return supprime ? ResponseEntity.ok(true)
                 : ResponseEntity.notFound().build();
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Vehicule> modifierVehicule(@PathVariable String id, @RequestBody Vehicule vehicule) {
+        try {
+            Optional<Vehicule> existingVehicule = vehiculeService.obtenirVehicule(id);
+            if (existingVehicule.isPresent()) {
+                vehicule.setId(id);
+                Vehicule updatedVehicule = vehiculeService.creerVehicule(vehicule);
+                return ResponseEntity.ok(updatedVehicule);
+            }
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }

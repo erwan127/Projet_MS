@@ -1,40 +1,30 @@
-package com.example.vehicule_service.entities;
+package com.example.statisticsservice.dto;
 
-import javax.persistence.*;
-
-@Entity
-@Table(name = "vehicules")
-public class Vehicule {
-    @Id
+public class VehicleDTO {
     private String id;
-
     private String marque;
     private String modele;
     private int nombrePlaces;
     private float kilometrage;
-
-    @Enumerated(EnumType.STRING)
-    private EtatVehicule etat;
-
-    @Embedded
-    private Position position;
-
+    private String etat;
+    private PositionDTO position;
     private int niveauCharge;
 
-    // Constructeurs
-    public Vehicule() {}
+    public VehicleDTO() {}
 
-    public Vehicule(String id, String marque, String modele, int nombrePlaces) {
+    public VehicleDTO(String id, String marque, String modele, int nombrePlaces, 
+                     float kilometrage, String etat, PositionDTO position, int niveauCharge) {
         this.id = id;
         this.marque = marque;
         this.modele = modele;
         this.nombrePlaces = nombrePlaces;
-        this.etat = EtatVehicule.OPERATIONNEL_EN_STATION;
-        this.niveauCharge = 100;
-        this.kilometrage = 0;
+        this.kilometrage = kilometrage;
+        this.etat = etat;
+        this.position = position;
+        this.niveauCharge = niveauCharge;
     }
 
-    // Getters et Setters
+    // Getters and Setters
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 
@@ -50,12 +40,12 @@ public class Vehicule {
     public float getKilometrage() { return kilometrage; }
     public void setKilometrage(float kilometrage) { this.kilometrage = kilometrage; }
 
-    public EtatVehicule getEtat() { return etat; }
-    public void setEtat(EtatVehicule etat) { this.etat = etat; }
+    public String getEtat() { return etat; }
+    public void setEtat(String etat) { this.etat = etat; }
 
-    public Position getPosition() { return position; }
-    public void setPosition(Position position) { this.position = position; }
+    public PositionDTO getPosition() { return position; }
+    public void setPosition(PositionDTO position) { this.position = position; }
 
     public int getNiveauCharge() { return niveauCharge; }
     public void setNiveauCharge(int niveauCharge) { this.niveauCharge = niveauCharge; }
-}
+} 
